@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>The relievers</title>
-	<link rel="stylesheet" href="/css/styles.css">
+	<link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
@@ -13,13 +13,13 @@
 		<div class="welcome-container">
 					
 			<div class="status-container">
-				<div class="available">
+				<div id="room1" class="room available">
 					<span>Room 1</span>
 					<span class="block status center">AVAILABLE</span>
 					<span class="timer">Timer open: 01:20:09</span>
 				</div>
 				
-				<div class="busy">
+				<div id="room2" class="room available">
 					<span>Room 2</span>
 					<span class="block status center">BUSY</span>
 					<span class="timer">Timer closed: 01:20:09</span>
@@ -44,7 +44,7 @@
 				</div>
 			</div>
 			<div class="book-button">	
-				<button>BOOK</button>
+				<button id="book">BOOK</button>
 			</div>
 		</div>
 	</section>
@@ -60,6 +60,8 @@
 		</div>
 
 	</section>
+
+	<script src="scripts/scripts.js"></script>
 </body>
 
 </html>

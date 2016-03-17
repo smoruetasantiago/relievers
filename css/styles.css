@@ -41,7 +41,7 @@ h1, h2, h3 {
 	margin-bottom:5rem;
 }
 
-.available, .busy {
+.room {
 	color:#fff;
 	font-size: 1.6rem;
 	-webkit-box-shadow: 0px 0px 10px 2px rgba(216,216,216,1);
@@ -50,7 +50,7 @@ h1, h2, h3 {
 	border-radius: 6px;
 }
 
-.available, .busy, .current-turn {
+.room, .current-turn {
 	text-align: left;
 	display: block;
 	padding:1.8rem;
@@ -60,6 +60,7 @@ h1, h2, h3 {
 .status {
 	font-size: 3rem;
 	padding:1rem 0;
+	text-transform: uppercase;
 }
 
 .current-turn {
@@ -109,13 +110,13 @@ h1, h2, h3 {
 	padding:0;
 }
 
-.available {
-	background-color: #7ED321;
+.room {
+	background-color: #D32155;
 	font-size: 1.4rem;
 }
 
-.busy {
-	background-color: #D32155;
+.room.available {
+	background-color: #7ED321;
 	font-size: 1.4rem;
 }
 
