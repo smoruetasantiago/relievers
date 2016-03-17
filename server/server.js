@@ -46,13 +46,11 @@ function getDoorStatus() {
     }];
 }
 
-function hasSomethingChanged() {
-    let somethingChanged = false;
+function getChangedRoom() {
     let random = Math.random();
     let doorToChange;
 
     if (random < 0.5) {
-        somethingChanged = true;
         // We change one of the doors status
         random = Math.random();
 
@@ -61,7 +59,11 @@ function hasSomethingChanged() {
     }
     // else We keep everything as it is now
     
-    return somethingChanged;
+    return doorToChange;
+}
+
+function isRoomFree(doorNumber) {
+    return doorStatus[doorNumber];
 }
 
 /** Handlers **/
@@ -83,8 +85,16 @@ wsServer.on('request', (r) => {
     const connection = r.accept();
     const randomChanges = setInterval(() => {
         if (automaticChanges) {
-            if(hasSomethingChanged()) {
-                connection.send(JSON.stringify(getDoorStatus()));
+            let changedRoom = getChangedRoom();
+
+            if (typeof changedRoom === 'number') {
+                let response = {
+                    door_status: getDoorStatus()
+                };
+
+                if (isRoomFree(changedRoom)) response.current_turn = queueOfPeople.shift();
+
+                connection.send(JSON.stringify(response));
             }
         }
     }, 5000);
