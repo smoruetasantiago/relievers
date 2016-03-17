@@ -3,11 +3,12 @@
 const http = require('http');
 const server = http.createServer(handleWebRequest);
 const WebSocketServer = require('websocket').server;
+const Room = require('./room');
 const wsServer = new WebSocketServer({
     httpServer: server
 });
 
-let doorStatus = [false, false]; // false = free / true = busy
+let rooms = [new Room('room1', 'Left room'), new Room('room2', 'Right room')];
 let queueOfPeople = [];
 let automaticChanges = true;
 
@@ -37,33 +38,29 @@ function getDoorStatus() {
     return [{
         id: 'room1',
         name: 'Left room',
-        available: doorStatus[0]
+        available: rooms[0].isFree()
     },
     {
         id: 'room2',
         name: 'Right room',
-        available: doorStatus[1]
+        available: rooms[1].isFree()
     }];
 }
 
 function getChangedRoom() {
     let random = Math.random();
-    let doorToChange;
+    let roomToChange;
 
     if (random < 0.5) {
         // We change one of the doors status
         random = Math.random();
 
-        doorToChange = random < 0.5 ? 0 : 1;
-        doorStatus[doorToChange] = !doorStatus[doorToChange];
+        roomToChange = random < 0.5 ? 0 : 1;
+        rooms[roomToChange].toggleOccupationStatus();
     }
     // else We keep everything as it is now
     
-    return doorToChange;
-}
-
-function isRoomFree(doorNumber) {
-    return doorStatus[doorNumber];
+    return roomToChange;
 }
 
 /** Handlers **/
@@ -94,7 +91,7 @@ wsServer.on('request', (r) => {
                     door_status: getDoorStatus()
                 };
 
-                if (isRoomFree(changedRoom)) {
+                if (rooms[changedRoom].isFree()) {
                     response.current_turn = queueOfPeople.shift();
                     response.queue = queueOfPeople;
                 }

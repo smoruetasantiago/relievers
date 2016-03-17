@@ -1,17 +1,28 @@
+'use strict';
+
 class Room {
-	constructor(id, name) {
-		this.id = id;
-		this.name = name;
-		this.isAvailable = true;
-	}
+    constructor(id, name) {
+        this.id = id;
+        this.name = name;
+        this.isAvailable = true;
+    }
 
-	get isFree() {
-		return isAvailable;
-	}
+    isFree() {
+        return this.isAvailable;
+    }
 
-	occupy() {
-		this.isAvailable = false;
-	}
+    free() {
+        this.isAvailable = true;
+    }
+
+    occupy() {
+        this.isAvailable = false;
+    }
+
+    toggleOccupationStatus() {
+        if (this.isFree()) this.occupy();
+        else this.free();
+    }
 }
 
-export Room;
+module.exports = Room;
