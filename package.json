@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/smoruetasantiago/relievers/issues"
   },
-  "homepage": "https://github.com/smoruetasantiago/relievers#readme"
+  "homepage": "https://github.com/smoruetasantiago/relievers#readme",
+  "devDependencies": {
+    "http-server": "^0.9.0"
+  }
 }
