@@ -1,7 +1,5 @@
 'use strict';
 
-import * from "room";
-
 const http = require('http');
 const server = http.createServer(handleWebRequest);
 const WebSocketServer = require('websocket').server;
