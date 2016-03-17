@@ -8,6 +8,7 @@ const wsServer = new WebSocketServer({
 });
 
 let doorStatus = [false, false];
+let queueOfPeople = [];
 let automaticChanges = true;
 
 function maybeChangeDoorValue() {
@@ -37,6 +38,31 @@ function getReturningData() {
 	}];
 }
 
+function getDoorStatus(connection) {
+    connection.send(JSON.stringify(getReturningData()));
+}
+
+function addToQueue(connection, message) {
+	const currentTurn = queueOfPeople.length + 1;
+	
+	queueOfPeople.push(currentTurn);
+	connection.send(JSON.stringify(queueOfPeople));
+}
+
+function getMessageHandler(message) {
+	switch (message.utf8Data) {
+		case 'get-doors-status':
+			return getDoorStatus;
+			break;
+		case 'add-to-queue':
+			return addToQueue;
+			break;
+		default:
+			return function () {}
+			break;
+	}
+}
+
 wsServer.on('request', (r) => {
     const connection = r.accept();
     const randomChanges = setInterval(() => {
@@ -47,7 +73,7 @@ wsServer.on('request', (r) => {
     }, 10000);
    
     connection.on('message', (message) => {
-    	connection.send(JSON.stringify(getReturningData()));
+    	getMessageHandler(message)(connection, message);
 	});
 });
 
