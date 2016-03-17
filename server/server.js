@@ -69,7 +69,9 @@ function isRoomFree(doorNumber) {
 /** Handlers **/
 
 function getDoorStatusHandler(connection) {
-    connection.send(JSON.stringify(getDoorStatus()));
+    connection.send(JSON.stringify({
+        door_status: getDoorStatus()
+    }));
 }
 
 function addToQueueHandler(connection, message) {
