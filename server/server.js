@@ -4,12 +4,13 @@ const http = require('http');
 const server = http.createServer(handleWebRequest);
 const WebSocketServer = require('websocket').server;
 const Room = require('./room');
+const WaitingQueue = require('./waiting-queue');
 const wsServer = new WebSocketServer({
     httpServer: server
 });
 
 let rooms = [new Room('room1', 'Left room'), new Room('room2', 'Right room')];
-let queueOfPeople = [];
+let queueOfPeople = new WaitingQueue();
 let automaticChanges = true;
 
 function handleWebRequest(request, response) {
@@ -72,10 +73,8 @@ function getDoorStatusHandler(connection) {
 }
 
 function addToQueueHandler(connection, message) {
-    const currentTurn = queueOfPeople.length + 1;
-    
-    queueOfPeople.push(currentTurn);
-    connection.send(JSON.stringify(queueOfPeople));
+    queueOfPeople.addWaiter();
+    connection.send(JSON.stringify(queueOfPeople.getQueue()));
 }
 
 /** End Handlers **/
@@ -92,8 +91,8 @@ wsServer.on('request', (r) => {
                 };
 
                 if (rooms[changedRoom].isFree()) {
-                    response.current_turn = queueOfPeople.shift();
-                    response.queue = queueOfPeople;
+                    response.current_turn = queueOfPeople.next();
+                    response.queue = queueOfPeople.getQueue();
                 }
 
                 connection.send(JSON.stringify(response));
