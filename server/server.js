@@ -1,7 +1,7 @@
 'use strict';
 
 const http = require('http');
-const server = http.createServer();
+const server = http.createServer(handleWebRequest);
 const WebSocketServer = require('websocket').server;
 const wsServer = new WebSocketServer({
     httpServer: server
@@ -11,13 +11,21 @@ let doorStatus = [false, false]; // false = free / true = busy
 let queueOfPeople = [];
 let automaticChanges = true;
 
+function handleWebRequest(request, response) {
+    if (request.url.indexOf('doors/status') !== -1 ) {
+        response.setHeader('Content-Type', 'application/json');
+        response.write(JSON.stringify(getDoorStatus()));
+    }
+    response.end();
+}
+
 function getMessageHandler(message) {
     switch (message.utf8Data) {
         case 'get-doors-status':
-            return getDoorStatus;
+            return getDoorStatusHandler;
             break;
         case 'add-to-queue':
-            return addToQueue;
+            return addToQueueHandler;
             break;
         default:
             return function () {}
@@ -25,7 +33,7 @@ function getMessageHandler(message) {
     }
 }
 
-function getReturningData() {
+function getDoorStatus() {
     return [{
         id: 'room1',
         name: 'Left room',
@@ -58,11 +66,11 @@ function hasSomethingChanged() {
 
 /** Handlers **/
 
-function getDoorStatus(connection) {
-    connection.send(JSON.stringify(getReturningData()));
+function getDoorStatusHandler(connection) {
+    connection.send(JSON.stringify(getDoorStatus()));
 }
 
-function addToQueue(connection, message) {
+function addToQueueHandler(connection, message) {
     const currentTurn = queueOfPeople.length + 1;
     
     queueOfPeople.push(currentTurn);
@@ -76,7 +84,7 @@ wsServer.on('request', (r) => {
     const randomChanges = setInterval(() => {
         if (automaticChanges) {
             if(hasSomethingChanged()) {
-                connection.send(JSON.stringify(getReturningData()));
+                connection.send(JSON.stringify(getDoorStatus()));
             }
         }
     }, 5000);
