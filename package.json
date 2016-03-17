@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/smoruetasantiago/relievers#readme",
   "devDependencies": {
-    "hapi": "^13.2.1"
+    "hapi": "^13.2.1",
+    "socket.io": "^1.4.5"
   }
 }
