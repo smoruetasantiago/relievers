@@ -1,39 +1,29 @@
-'use strict';
-
-const Hapi = require('hapi');
-const server = new Hapi.Server();
-
-server.connection({ port: 3000 });
-
-const io = require('socket.io')(server.listener);
-
-server.route({
-    method: 'GET',
-    path: '/',
-    handler: function (request, reply) {
-        reply('Send a POST request to /sensor-status');
-    }
+const http = require('http');
+const server = http.createServer(function(request, response) {});
+const WebSocketServer = require('websocket').server;
+const wsServer = new WebSocketServer({
+    httpServer: server
 });
 
-server.route({
-    method: 'GET',
-    path: '/sensor-status',
-    handler: function (request, reply) {
-        reply(true);
-    }
+wsServer.on('request', (r) => {
+    const connection = r.accept();
+   
+    connection.on('message', (message) => {
+    	const data = [{
+    		id: 'room1',
+            name: "Left room",
+            status: false
+        },
+        {
+            id: 'room2',
+            name: "Right room",
+            status: true        
+        }];
+
+    	connection.send(JSON.stringify(data));
+	});
 });
 
-io.on('connection', (socket) => {
-    socket.emit('Oh hii!');
-
-    socket.on('burp', function () {
-        socket.emit('Excuse you!');
-    });
-});
-
-server.start((err) => {
-    if (err) {
-        throw err;
-    }
-    console.log('Server running at:', server.info.uri);
+server.listen(3000, () => {
+    console.log((new Date()) + ' Server is listening on port 3000');
 });
