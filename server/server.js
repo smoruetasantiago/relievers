@@ -1,5 +1,7 @@
 'use strict';
 
+import * from "room";
+
 const http = require('http');
 const server = http.createServer(handleWebRequest);
 const WebSocketServer = require('websocket').server;
@@ -92,7 +94,10 @@ wsServer.on('request', (r) => {
                     door_status: getDoorStatus()
                 };
 
-                if (isRoomFree(changedRoom)) response.current_turn = queueOfPeople.shift();
+                if (isRoomFree(changedRoom)) {
+                    response.current_turn = queueOfPeople.shift();
+                    response.queue = queueOfPeople;
+                }
 
                 connection.send(JSON.stringify(response));
             }
