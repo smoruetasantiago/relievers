@@ -1,8 +1,8 @@
 'use strict';
 
 class Sensor {
-    constructor() {
-        this.open = false;
+    constructor(initialStatus) {
+        this.open = initialStatus;
     }
 
     updateOpenStatus(status) {

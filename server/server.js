@@ -13,7 +13,7 @@ const wsServer = new WebSocketServer({
 const PythonShell = require('python-shell');
 let pyShell;
 
-let roomSensor = new RoomSensor();
+let roomSensor;
 let rooms = [new Room('room1', 'Left room'), new Room('room2', 'Right room')];
 let queueOfPeople = new WaitingQueue();
 let automaticChanges = false;
@@ -107,13 +107,22 @@ wsServer.on('request', (r) => {
     setInterval(() => {
         pyShell = new PythonShell('server/poller.py');
         pyShell.on('message', (message) => {
-            const sensorChanged = roomSensor.updateOpenStatus(message === '0');
+            const isSensorOpen = message === '0';
+            let shouldSendMessage = true;
 
-            if (sensorChanged) {
+            if (!roomSensor) {
+                roomSensor = new roomSensor(isSensorOpen);
+            } else {
+                const sensorChanged = roomSensor.updateOpenStatus();
+
+                if (!sensorChanged) shouldSendMessage = false;
+            }
+
+            if (shouldSendMessage) {
                 rooms[0].toggleOccupationStatus();
                 connection.send(JSON.stringify({
-		    message: 'get-doors-status',
-	            doors_status: getDoorsStatus()
+                    message: 'get-doors-status',
+                    doors_status: getDoorsStatus()
                 }));
             }
         });
