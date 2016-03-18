@@ -38,6 +38,9 @@ function handleWebRequest(request, response) {
     if (request.url.indexOf('doors/status') !== -1 ) {
         response.setHeader('Content-Type', 'application/json');
         response.write(JSON.stringify(getDoorsStatus()));
+    } else if (request.url.indexOf('book') !== -1 ) {
+        response.setHeader('Content-Type', 'application/json');
+        response.write(queueOfPeople.getQueue());
     }
     response.end();
 }
