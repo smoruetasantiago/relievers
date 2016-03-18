@@ -12,7 +12,7 @@ const PythonShell = require('python-shell');
 let pyShell;
 
 setInterval(() => {
-    pyShell = new PythonShell('test.py');
+    pyShell = new PythonShell('server/test.py');
 	pyShell.on('message', (message) => {
 	    console.log(message);
     });
