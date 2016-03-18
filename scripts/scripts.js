@@ -62,7 +62,7 @@
                 }, false);
 
                 if (event.current_turn) {
-                    luckyGuy.innerHTML = event.current_turn + 1;
+                    luckyGuy.innerHTML = event.current_turn;
                     queue.removeChild(queue.firstChild);
                 }
             },
@@ -81,7 +81,7 @@
 
                 if (queue.length) {
                     document.getElementById('current-turn').classList.remove('hidden');
-                    queue.shift();
+                    // queue.shift();
                     queue.forEach(function(queueNumber) {
                         queueList += '<li>' + queueNumber + '</li>';
                     });

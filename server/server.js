@@ -146,10 +146,9 @@ wsServer.on('request', (r) => {
 
             if (sensorChanged) {
                 rooms[0].toggleOccupationStatus();
-                const next = queueOfPeople.next();
 
-                if (rooms[0].isFree() && typeof next !== undefined) {
-                    result.current_turn = next;
+                if (rooms[0].isFree()) {
+                    result.current_turn = queueOfPeople.next();
                 }
             } else shouldSendMessage = false;
 
