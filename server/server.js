@@ -69,7 +69,7 @@ function getChangedRoom() {
 function getDoorStatusHandler(connection) {
     connection.send(JSON.stringify({
         message: 'get-doors-status',
-        door_status: getDoorsStatus()
+        doors_status: getDoorsStatus()
     }));
 }
 
@@ -91,7 +91,7 @@ wsServer.on('request', (r) => {
 
             if (typeof changedRoom === 'number') {
                 let response = {
-                    door_status: getDoorsStatus()
+                    doors_status: getDoorsStatus()
                 };
 
                 if (rooms[changedRoom].isFree()) {
