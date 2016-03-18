@@ -141,8 +141,7 @@ wsServer.on('request', (r) => {
             const isSensorOpen = message === '0';
             const sensorChanged = roomSensor.updateOpenStatus(isSensorOpen);
             let result = {
-                message: 'get-doors-status',
-                doors_status: getDoorsStatus()
+                message: 'get-doors-status'
             };
 
             if (sensorChanged) {
@@ -154,6 +153,8 @@ wsServer.on('request', (r) => {
             } else shouldSendMessage = false;
 
             if (shouldSendMessage) {
+                result.doors_status = getDoorsStatus();
+
                 connection.send(JSON.stringify(result));
             }
         });
