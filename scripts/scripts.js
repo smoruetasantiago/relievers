@@ -35,6 +35,7 @@
                 switch (event.message) {
                     case 'get-doors-status':
                         vm.updateUiRoomStatus(event.doors_status);
+                        vm.updateQueueIfNecessary(event);
                         break;
                     case 'add-to-queue':
                         vm.updateQueue(event.queue);
@@ -53,13 +54,25 @@
                 });
             },
 
+            updateQueueIfNecessary: function (event) {
+                var luckyGuy = document.getElementById('lucky-guy');
+                var queue = document.getElementsByClassName('queue')[0];
+                var isAnyRoomFree = event.doors_status.reduce(function (isFree, room) {
+                    return isFree || room.available;
+                }, false);
+
+                if (event.current_turn) {
+                    luckyGuy.innerHTML = event.current_turn + 1;
+                    queue.removeChild(queue.firstChild);
+                }
+            },
+
             updateQueue: function (queue) {
                 var currentTurn = document.getElementById('current-turn');
                 var luckyGuy = document.getElementById('lucky-guy');
 
                 vm.yourTurn = queue[queue.length - 1];
                 vm.updateUIQueue(queue);
-                luckyGuy.innerHTML = queue.shift();
                 currentTurn.classList.remove('hidden');
             },
 
@@ -68,6 +81,7 @@
 
                 if (queue.length) {
                     document.getElementById('current-turn').classList.remove('hidden');
+                    queue.shift();
                     queue.forEach(function(queueNumber) {
                         queueList += '<li>' + queueNumber + '</li>';
                     });
@@ -76,42 +90,6 @@
                 }
             }
         };
-
-		// vm.openWebSocketConnection = function (action) {
-
-		// 	vm.ws.onmessage = (function (event) {
-		// 		var self = this;
-		// 		if (action === "get-doors-status") {
-		// 			self.roomsJson = JSON.parse(event.data)["door_status"];
-		// 			//self.queue = self.roomsJson.queue;
-		// 			self.updateUiRoomStatus();
-		// 		} else {
-		// 			self.queue = JSON.parse(event.data);				
-		// 			self.updateQueue();
-		// 			action = "get-doors-status"; 
-		// 		}
-		// 	}).bind(vm);
-
-		//     this.waitForConnection = function (callback, interval) {
-		// 	    if (ws.readyState === 1) {
-		// 	        callback();
-		// 	    } else {
-		// 	        var that = this;
-		// 	        // optional: implement backoff for interval here
-		// 	        setTimeout(function () {
-		// 	            that.waitForConnection(callback, interval);
-		// 	        }, interval);
-		// 	    }
-		// 	};
-
-		// 	this.waitForConnection(function () {
-		//         vm.ws.send(action);
-		//         if (typeof callback !== 'undefined') {
-		//           callback();
-		//         }
-		//     }, 1000);
-
-		// };
 
 		vm.initialize();
 	};
