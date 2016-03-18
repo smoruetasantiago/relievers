@@ -62,7 +62,6 @@ function getMessageHandler(message) {
         case 'get-waiting-queue':
             return getQueueHandler;
             break;
-        }
         default:
             return function () {}
             break;
