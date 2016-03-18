@@ -111,7 +111,7 @@ wsServer.on('request', (r) => {
             let shouldSendMessage = true;
 
             if (!roomSensor) {
-                roomSensor = new roomSensor(isSensorOpen);
+                roomSensor = new RoomSensor(isSensorOpen);
             } else {
                 const sensorChanged = roomSensor.updateOpenStatus();
 
