@@ -7,12 +7,17 @@
 	<title>The relievers</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
 	<section data-id="welcome">
+        <section id="game-panel" class="game-panel">
+            <span class="closeBtn">X</span>
+            <iframe src="https://embeddable.gamecloudnetwork.com/?width=980&height=552&ad=true&type=gameplay&widget=speedoku&portal=osom&
+;game_width=980&game_height=640&tags=entertainment%2Cnews%2Cpolitics%2Csports%2Clifestyle%2Cbusiness" width="100%" height="100%" frameborder="0"></iframe>
+        </section>
 		<div class="welcome-container">
-					
 			<div class="status-container">
 				<div id="room1" class="room available">
                     <div>
@@ -22,7 +27,7 @@
                     </div>
                     <div class="tools">
 						<ul>
-							<li><a href="http://moonpig-game.azurewebsites.net/"><i class="fa fa-gamepad fa-2x"></i></li>
+							<li class="game-button"><i class="fa fa-gamepad fa-2x"></i></li>
 						</ul>
 					</div>
 				</div>
@@ -35,7 +40,7 @@
                     </div>
                     <div class="tools">
 						<ul>
-							<li><a href="http://moonpig-game.azurewebsites.net/"><i class="fa fa-gamepad fa-2x"></i></li>
+							<li class="game-button"><i class="fa fa-gamepad fa-2x"></i></li>
 						</ul>
 					</div>
 				</div>
@@ -61,19 +66,7 @@
 		</div>
 	</section>
 
-	<section id="area-waiting" class="hidden">
-		<div class="occupied-container">
-			<span>do your wait better...</span>
-			<ul>
-				<li><button>Play Bossanova</button></li>
-				<li><button>Play Trailer</button></li>
-				<li><button>Play an HTML5 Game</button></li>
-			</ul>	
-		</div>
-
-	</section>
-
 	<script src="scripts/scripts.js"></script>
 </body>
-
+    
 </html>

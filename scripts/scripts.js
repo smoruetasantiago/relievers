@@ -11,6 +11,7 @@
             
             initialize: function () {
                 vm.defineBookClickEvent();
+                vm.defineGameClickEvent();
                 ws = new WebSocket(WEBSOCKET_URL);
 
                 ws.onmessage = function (event) {
@@ -30,7 +31,21 @@
                     ws.send('add-to-queue');
                 });
             },
-
+            
+            defineGameClickEvent: function () {
+                var gameList = [document.getElementsByClassName("game-button")[0], document.getElementsByClassName("closeBtn")[0]];
+                gameList.forEach(function(elem){
+                    
+                    
+                    return (function(ele) {
+                        ele.addEventListener("click", function() {
+                            var gamePanel = document.getElementById("game-panel");
+                            gamePanel.classList.toggle('active');
+                        });
+                    })(elem)   
+                });
+            },
+        
             handleMessage: function (event) {
                 switch (event.message) {
                     case 'get-doors-status':

@@ -34,6 +34,8 @@ h1, h2, h3 {
 }
 
 .welcome-container {
+    position: relative;
+    z-index: 1;
 	text-align: center;
 	min-height: 10rem;
 	padding: 5%;
@@ -171,21 +173,28 @@ h1, h2, h3 {
 	display: block;
 }
 
-@media (min-width: 600px) {
-	.current-turn {
-		float: left;
-		width: 30%;
-	}
-	.status-container {
-		float: right;
-	}
-	.available, .busy {
-		display: inline-block;
-	}
-	.queue-container {
-		border-top: 1px solid #F4F4F4;
-		color:#d8d8d8;
-		margin:2rem 0;
-		font-size: 1.6rem;
-	}
+.game-panel {
+    position: absolute;
+    top: 0;
+    right:-99999px;
+    width: 100%;
+    height: 100%;
+    transition: 0.5s right ease-in-out;
+    z-index: 999;
+}
+
+.game-panel.active {
+    width: 100%;
+    right: 0;
+}
+
+.game-panel .closeBtn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 4rem;
+    display: block;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
 }
