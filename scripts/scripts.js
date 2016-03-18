@@ -21,6 +21,7 @@
                     if (ws.readyState === 1) {
                         clearInterval(getInitialData);
                         ws.send('get-doors-status');
+                        ws.send('get-waiting-queue');
                     }
                 }, 500);
             },
@@ -32,12 +33,15 @@
             },
 
             handleMessage: function (event) {
-                debugger;
                 switch (event.message) {
                     case 'get-doors-status':
                         vm.updateUiRoomStatus(event.doors_status);
                         break;
                     case 'add-to-queue':
+                        vm.updateQueue(event.queue);
+                        break;
+                    case 'get-waiting-queue':
+                        vm.updateUIQueue(event.queue);
                         break;
                 }
             },
@@ -50,17 +54,27 @@
                 });
             },
 
-            updateQueue: function () {
-                vm.yourTurn = vm.queue[vm.queue.length - 1];
-                vm.queueList = "";
-                
-                vm.queue.forEach(function(queueNumber) {
-                    var self = vm;
+            updateQueue: function (queue) {
+                var currentTurn = document.getElementById('current-turn');
+                var luckyGuy = document.getElementById('lucky-guy');
 
-                    vm.queueList += "<li>" + queueNumber + "</li>";
-                });
+                vm.yourTurn = queue[queue.length - 1];
+                vm.updateUIQueue(queue);
+                luckyGuy.innerHTML = queue.shift();
+                currentTurn.classList.remove('hidden');
+            },
 
-                document.getElementsByClassName("queue")[0].innerHTML = this.queueList;
+            updateUIQueue: function (queue) {
+                var queueList = '';
+
+                if (queue.length) {
+                    currentTurn.classList.remove('hidden');
+                    queue.forEach(function(queueNumber) {
+                        queueList += '<li>' + queueNumber + '</li>';
+                    });
+
+                    document.getElementsByClassName('queue')[0].innerHTML = queueList;
+                }
             }
         };
 
