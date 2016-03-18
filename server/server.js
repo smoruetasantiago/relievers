@@ -113,7 +113,7 @@ wsServer.on('request', (r) => {
                 rooms[0].toggleOccupationStatus();
                 connection.send(JSON.stringify({
 		    message: 'get-doors-status',
-	            doors_status: getDoorStatus()
+	            doors_status: getDoorsStatus()
                 }));
             }
         });
