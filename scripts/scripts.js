@@ -1,83 +1,106 @@
 (function() {
+    // var WEBSOCKET_URL = 'ws://localhost:3000';
+    var WEBSOCKET_URL = 'ws://192.168.181.232:3000';
+
 	var revieversDashBoard = function() {
-		var vm =  this,
-			roomsJson = [];
+        var vm = {
+            ws: null,
+            queue: [],
+            yourTurn: null,
+            queueList: null,
+            
+            initialize: function () {
+                vm.defineBookClickEvent();
+                ws = new WebSocket(WEBSOCKET_URL);
 
-		vm.ws = new WebSocket('ws://localhost:3000');
+                ws.onmessage = function (event) {
+                    vm.handleMessage(JSON.parse(event.data));
+                };
 
-		//initialize flow
-		vm.initialize = function (argument) {
-			vm.openWebSocketConnection("get-doors-status");
-			vm.defineBookClickEvent();
-		};
+                var getInitialData = setInterval(function () {
+                    if (ws.readyState === 1) {
+                        clearInterval(getInitialData);
+                        ws.send('get-doors-status');
+                    }
+                }, 500);
+            },
 
-		vm.openWebSocketConnection = function (action) {
+            defineBookClickEvent: function () {
+                document.getElementById("book").addEventListener("click", function() {
+                    ws.send('add-to-queue');
+                });
+            },
 
-			vm.ws.onmessage = (function (event) {
-				var self = this;
-				if (action === "get-doors-status") {
-					self.roomsJson = JSON.parse(event.data)["door_status"];
-					//self.queue = self.roomsJson.queue;
-					self.updateUiRoomStatus();
-				} else {
-					self.queue = JSON.parse(event.data);				
-					self.updateQueue();
-					action = "get-doors-status"; 
-				}
-			}).bind(vm);
+            handleMessage: function (event) {
+                debugger;
+                switch (event.message) {
+                    case 'get-doors-status':
+                        vm.updateUiRoomStatus(event.doors_status);
+                        break;
+                    case 'add-to-queue':
+                        break;
+                }
+            },
 
-		    this.waitForConnection = function (callback, interval) {
-			    if (ws.readyState === 1) {
-			        callback();
-			    } else {
-			        var that = this;
-			        // optional: implement backoff for interval here
-			        setTimeout(function () {
-			            that.waitForConnection(callback, interval);
-			        }, interval);
-			    }
-			};
+            updateUiRoomStatus: function (rooms) {
+                rooms.forEach(function (room) {
+                    var currentRoom = document.getElementById(room.id);
+                    currentRoom.className = room.available ? "room available" : "room";
+                    currentRoom.getElementsByClassName("status")[0].innerHTML = room.available ? "available" : "busy";
+                });
+            },
 
-			this.waitForConnection(function () {
-		        vm.ws.send(action);
-		        if (typeof callback !== 'undefined') {
-		          callback();
-		        }
-		    }, 1000);
+            updateQueue: function () {
+                vm.yourTurn = vm.queue[vm.queue.length - 1];
+                vm.queueList = "";
+                
+                vm.queue.forEach(function(queueNumber) {
+                    var self = vm;
 
-		};
-		vm.openWebSocketConnection("get-doors-status");
+                    vm.queueList += "<li>" + queueNumber + "</li>";
+                });
 
-		vm.updateUiRoomStatus = function() {
-			
-			vm.roomsJson.forEach(function (room){
-				var currentRoom = document.getElementById(room.id);
-				currentRoom.className = room.available ? "room available" : "room";
-				currentRoom.getElementsByClassName("status")[0].innerHTML = room.available ? "available" : "busy";
-			});
-		};
+                document.getElementsByClassName("queue")[0].innerHTML = this.queueList;
+            }
+        };
 
-		vm.updateQueue = function() {
-			vm.yourTurn = vm.queue[vm.queue.length - 1];
-			vm.queueList = "";
-			
-			vm.queue.forEach(function(queueNumber) {
-				var self = this;
+		// vm.openWebSocketConnection = function (action) {
 
-				this.queueList += "<li>" + queueNumber + "</li>";
-			}.bind(vm));
+		// 	vm.ws.onmessage = (function (event) {
+		// 		var self = this;
+		// 		if (action === "get-doors-status") {
+		// 			self.roomsJson = JSON.parse(event.data)["door_status"];
+		// 			//self.queue = self.roomsJson.queue;
+		// 			self.updateUiRoomStatus();
+		// 		} else {
+		// 			self.queue = JSON.parse(event.data);				
+		// 			self.updateQueue();
+		// 			action = "get-doors-status"; 
+		// 		}
+		// 	}).bind(vm);
 
-			document.getElementsByClassName("queue")[0].innerHTML = vm.queueList;
-		};
+		//     this.waitForConnection = function (callback, interval) {
+		// 	    if (ws.readyState === 1) {
+		// 	        callback();
+		// 	    } else {
+		// 	        var that = this;
+		// 	        // optional: implement backoff for interval here
+		// 	        setTimeout(function () {
+		// 	            that.waitForConnection(callback, interval);
+		// 	        }, interval);
+		// 	    }
+		// 	};
 
-		vm.defineBookClickEvent = function (argument) {
-			document.getElementById("book").addEventListener("click", function(e) {
-				vm.openWebSocketConnection("add-to-queue");
-			});
-		};
+		// 	this.waitForConnection(function () {
+		//         vm.ws.send(action);
+		//         if (typeof callback !== 'undefined') {
+		//           callback();
+		//         }
+		//     }, 1000);
+
+		// };
 
 		vm.initialize();
-		
 	};
 	return revieversDashBoard(); 
 })();

@@ -68,13 +68,17 @@ function getChangedRoom() {
 
 function getDoorStatusHandler(connection) {
     connection.send(JSON.stringify({
+        message: 'get-doors-status',
         door_status: getDoorsStatus()
     }));
 }
 
 function addToQueueHandler(connection, message) {
     queueOfPeople.addWaiter();
-    connection.send(JSON.stringify(queueOfPeople.getQueue()));
+    connection.send(JSON.stringify({
+        message: 'add-to-queue',
+        queue: queueOfPeople.getQueue()
+    }));
 }
 
 /** End Handlers **/
