@@ -21,7 +21,7 @@ let automaticChanges = false;
 function handleWebRequest(request, response) {
     if (request.url.indexOf('doors/status') !== -1 ) {
         response.setHeader('Content-Type', 'application/json');
-        response.write(JSON.stringify(getDoorStatus()));
+        response.write(JSON.stringify(getDoorsStatus()));
     }
     response.end();
 }
@@ -40,17 +40,12 @@ function getMessageHandler(message) {
     }
 }
 
-function getDoorStatus() {
-    return [{
-        id: 'room1',
-        name: 'Left room',
-        available: rooms[0].isFree()
-    },
-    {
-        id: 'room2',
-        name: 'Right room',
-        available: rooms[1].isFree()
-    }];
+function getDoorsStatus() {
+    var result = rooms.map((room) => {
+        return room.getJson()
+    });
+
+    return result;
 }
 
 function getChangedRoom() {
@@ -73,7 +68,7 @@ function getChangedRoom() {
 
 function getDoorStatusHandler(connection) {
     connection.send(JSON.stringify({
-        door_status: getDoorStatus()
+        door_status: getDoorsStatus()
     }));
 }
 
@@ -92,7 +87,7 @@ wsServer.on('request', (r) => {
 
             if (typeof changedRoom === 'number') {
                 let response = {
-                    door_status: getDoorStatus()
+                    door_status: getDoorsStatus()
                 };
 
                 if (rooms[changedRoom].isFree()) {

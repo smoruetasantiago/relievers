@@ -23,6 +23,14 @@ class Room {
         if (this.isFree()) this.occupy();
         else this.free();
     }
+
+    getJson() {
+        return {
+            id: this.id,
+            name: this.name,
+            available: this.isAvailable
+        }
+    }
 }
 
 module.exports = Room;
