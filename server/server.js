@@ -16,7 +16,6 @@ let pyShell;
 let roomSensor;
 let rooms;
 let queueOfPeople = new WaitingQueue();
-let automaticChanges = false;
 
 (function initializeEverything() {
     pyShell = new PythonShell('server/poller.py');
@@ -71,22 +70,6 @@ function getDoorsStatus() {
     return result;
 }
 
-function getChangedRoom() {
-    let random = Math.random();
-    let roomToChange;
-
-    if (random < 0.5) {
-        // We change one of the doors status
-        random = Math.random();
-
-        roomToChange = random < 0.5 ? 0 : 1;
-        rooms[roomToChange].toggleOccupationStatus();
-    }
-    // else We keep everything as it is now
-    
-    return roomToChange;
-}
-
 /** Handlers **/
 
 function getDoorStatusHandler(connection) {
@@ -115,24 +98,6 @@ function getQueueHandler(connection) {
 
 wsServer.on('request', (r) => {
     const connection = r.accept();
-    const randomChanges = setInterval(() => {
-        if (automaticChanges) {
-            let changedRoom = getChangedRoom();
-
-            if (typeof changedRoom === 'number') {
-                let response = {
-                    doors_status: getDoorsStatus()
-                };
-
-                if (rooms[changedRoom].isFree()) {
-                    response.current_turn = queueOfPeople.next();
-                    response.queue = queueOfPeople.getQueue();
-                }
-
-                connection.send(JSON.stringify(response));
-            }
-        }
-    }, 5000);
 
     setInterval(() => {
         pyShell = new PythonShell('server/poller.py');
