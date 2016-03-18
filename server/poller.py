@@ -10,11 +10,11 @@ io.setup(door_sensor, io.IN, pull_up_down=io.PUD_UP)
  
 # function for the door opening
 def door_open():
-    print("1")
+    print("0")
  
 # function for the door closing
 def door_close():
-    print("0")
+    print("1")
  
 if io.input(door_sensor): # if door is opened
    door_open() # fire GA code
