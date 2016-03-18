@@ -34,7 +34,7 @@ class Room {
             id: this.id,
             name: this.name,
             available: this.isAvailable,
-            inQuarantine: this.inQuarantine
+            inQuarantine: this.isInQuarantine
         }
     }
 }
