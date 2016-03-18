@@ -1,29 +1,22 @@
 'use strict';
 
+const Room = require('./room');
+const WaitingQueue = require('./waiting-queue');
+const RoomSensor = require('./sensor');
+
 const http = require('http');
 const server = http.createServer(handleWebRequest);
 const WebSocketServer = require('websocket').server;
-const Room = require('./room');
-const WaitingQueue = require('./waiting-queue');
 const wsServer = new WebSocketServer({
     httpServer: server
 });
 const PythonShell = require('python-shell');
 let pyShell;
 
-setInterval(() => {
-    pyShell = new PythonShell('server/poller.py');
-	pyShell.on('message', (message) => {
-	    console.log(message);
-    });
-    pyShell.end((err) => {
-        if (err) throw err;
-    });
-}, 1000);
-
+let roomSensor = new RoomSensor();
 let rooms = [new Room('room1', 'Left room'), new Room('room2', 'Right room')];
 let queueOfPeople = new WaitingQueue();
-let automaticChanges = true;
+let automaticChanges = false;
 
 function handleWebRequest(request, response) {
     if (request.url.indexOf('doors/status') !== -1 ) {
@@ -111,6 +104,21 @@ wsServer.on('request', (r) => {
             }
         }
     }, 5000);
+
+    setInterval(() => {
+        pyShell = new PythonShell('server/poller.py');
+        pyShell.on('message', (message) => {
+            const sensorChanged = roomSensor.updateOpenStatus(message === '0');
+
+            if (sensorChanged) {
+                rooms[0].toggleOccupationStatus();
+                connection.send(JSON.stringify(getDoorStatus()));
+            }
+        });
+        pyShell.end((err) => {
+            if (err) throw err;
+        });
+    }, 1000);
    
     connection.on('message', (message) => {
         getMessageHandler(message)(connection, message);
