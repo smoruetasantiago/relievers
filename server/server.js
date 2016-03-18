@@ -8,6 +8,18 @@ const WaitingQueue = require('./waiting-queue');
 const wsServer = new WebSocketServer({
     httpServer: server
 });
+const PythonShell = require('python-shell');
+let pyShell;
+
+setInterval(() => {
+    pyShell = new PythonShell('test.py');
+	pyShell.on('message', (message) => {
+	    console.log(message);
+    });
+    pyShell.end((err) => {
+        if (err) throw err;
+    });
+}, 1000);
 
 let rooms = [new Room('room1', 'Left room'), new Room('room2', 'Right room')];
 let queueOfPeople = new WaitingQueue();
