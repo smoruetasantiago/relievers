@@ -139,16 +139,21 @@ wsServer.on('request', (r) => {
             let shouldSendMessage = true;
             const isSensorOpen = message === '0';
             const sensorChanged = roomSensor.updateOpenStatus(isSensorOpen);
+            let result = {
+                message: 'get-doors-status',
+                doors_status: getDoorsStatus()
+            };
 
             if (sensorChanged) {
                 rooms[0].toggleOccupationStatus();
+
+                if (rooms[0].isFree()) {
+                    result.current_turn = queueOfPeople.next();
+                }
             } else shouldSendMessage = false;
 
             if (shouldSendMessage) {
-                connection.send(JSON.stringify({
-                    message: 'get-doors-status',
-                    doors_status: getDoorsStatus()
-                }));
+                connection.send(JSON.stringify(result));
             }
         });
         pyShell.end((err) => {
