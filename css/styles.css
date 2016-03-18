@@ -110,6 +110,14 @@ h1, h2, h3 {
 	padding:0;
 }
 
+.current-turn .queue li:last-child {
+    color: blue;
+}
+
+.current-turn .queue li:last-child:after {
+    content: ' ← You';
+}
+
 .room {
 	background-color: #D32155;
 	font-size: 1.4rem;
@@ -123,7 +131,6 @@ h1, h2, h3 {
 .timer {
 	display: block;
 }
-
 
 @media (min-width: 600px) {
 	.current-turn {

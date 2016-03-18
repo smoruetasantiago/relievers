@@ -21,7 +21,6 @@
                     if (ws.readyState === 1) {
                         clearInterval(getInitialData);
                         ws.send('get-doors-status');
-                        ws.send('get-waiting-queue');
                     }
                 }, 500);
             },
@@ -68,7 +67,7 @@
                 var queueList = '';
 
                 if (queue.length) {
-                    currentTurn.classList.remove('hidden');
+                    document.getElementById('current-turn').classList.remove('hidden');
                     queue.forEach(function(queueNumber) {
                         queueList += '<li>' + queueNumber + '</li>';
                     });

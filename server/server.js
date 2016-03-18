@@ -53,6 +53,9 @@ function getMessageHandler(message) {
         case 'add-to-queue':
             return addToQueueHandler;
             break;
+        case 'get-waiting-queue':
+            return getQueueHandler;
+            break;
         default:
             return function () {}
             break;
@@ -92,10 +95,17 @@ function getDoorStatusHandler(connection) {
     }));
 }
 
-function addToQueueHandler(connection, message) {
+function addToQueueHandler(connection) {
     queueOfPeople.addWaiter();
     connection.send(JSON.stringify({
         message: 'add-to-queue',
+        queue: queueOfPeople.getQueue()
+    }));
+}
+
+function getQueueHandler(connection) {
+    connection.send(JSON.stringify({
+        message: 'get-waiting-queue',
         queue: queueOfPeople.getQueue()
     }));
 }
@@ -147,7 +157,7 @@ wsServer.on('request', (r) => {
     }, 1000);
    
     connection.on('message', (message) => {
-        getMessageHandler(message)(connection, message);
+        getMessageHandler(message)(connection);
     });
 });
 
