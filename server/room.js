@@ -1,10 +1,10 @@
 'use strict';
 
 class Room {
-    constructor(id, name) {
+    constructor(id, name, isFree) {
         this.id = id;
         this.name = name;
-        this.isAvailable = true;
+        this.isAvailable = isFree;
     }
 
     isFree() {

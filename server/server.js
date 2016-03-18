@@ -14,7 +14,7 @@ const PythonShell = require('python-shell');
 let pyShell;
 
 let roomSensor;
-let rooms = [new Room('room1', 'Left room'), new Room('room2', 'Right room')];
+let rooms;
 let queueOfPeople = new WaitingQueue();
 let automaticChanges = false;
 
@@ -104,21 +104,38 @@ wsServer.on('request', (r) => {
         }
     }, 5000);
 
-    setInterval(() => {
+    (function initializeEverything() {
         pyShell = new PythonShell('server/poller.py');
         pyShell.on('message', (message) => {
             const isSensorOpen = message === '0';
+
+            roomSensor = new RoomSensor(isSensorOpen);
+            let rooms = [
+                new Room('room1', 'Left room', isSensorOpen),
+                new Room('room2', 'Right room', true)
+            ];
+            
+            connection.send(JSON.stringify({
+                message: 'get-doors-status',
+                doors_status: getDoorsStatus()
+            }));
+            
+        });
+        pyShell.end((err) => {
+            if (err) throw err;
+        });
+    })();
+
+    setInterval(() => {
+        pyShell = new PythonShell('server/poller.py');
+        pyShell.on('message', (message) => {
             let shouldSendMessage = true;
+            const isSensorOpen = message === '0';
+            const sensorChanged = roomSensor.updateOpenStatus(isSensorOpen);
 
-            if (!roomSensor) {
-                roomSensor = new RoomSensor(isSensorOpen);
-            } else {
-                const sensorChanged = roomSensor.updateOpenStatus(isSensorOpen);
-
-                if (sensorChanged) {
-                    rooms[0].toggleOccupationStatus();
-                } else shouldSendMessage = false;
-            }
+            if (sensorChanged) {
+                rooms[0].toggleOccupationStatus();
+            } else shouldSendMessage = false;
 
             if (shouldSendMessage) {
                 connection.send(JSON.stringify({
