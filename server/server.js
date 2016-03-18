@@ -18,6 +18,22 @@ let rooms;
 let queueOfPeople = new WaitingQueue();
 let automaticChanges = false;
 
+(function initializeEverything() {
+    pyShell = new PythonShell('server/poller.py');
+    pyShell.on('message', (message) => {
+        const isSensorOpen = message === '0';
+
+        roomSensor = new RoomSensor(isSensorOpen);
+        rooms = [
+            new Room('room1', 'Left room', isSensorOpen),
+            new Room('room2', 'Right room', true)
+        ];
+    });
+    pyShell.end((err) => {
+        if (err) throw err;
+    });
+})();
+
 function handleWebRequest(request, response) {
     if (request.url.indexOf('doors/status') !== -1 ) {
         response.setHeader('Content-Type', 'application/json');
@@ -103,28 +119,6 @@ wsServer.on('request', (r) => {
             }
         }
     }, 5000);
-
-    (function initializeEverything() {
-        pyShell = new PythonShell('server/poller.py');
-        pyShell.on('message', (message) => {
-            const isSensorOpen = message === '0';
-
-            roomSensor = new RoomSensor(isSensorOpen);
-            rooms = [
-                new Room('room1', 'Left room', isSensorOpen),
-                new Room('room2', 'Right room', true)
-            ];
-            
-            connection.send(JSON.stringify({
-                message: 'get-doors-status',
-                doors_status: getDoorsStatus()
-            }));
-            
-        });
-        pyShell.end((err) => {
-            if (err) throw err;
-        });
-    })();
 
     setInterval(() => {
         pyShell = new PythonShell('server/poller.py');
