@@ -110,7 +110,7 @@ wsServer.on('request', (r) => {
             const isSensorOpen = message === '0';
 
             roomSensor = new RoomSensor(isSensorOpen);
-            let rooms = [
+            rooms = [
                 new Room('room1', 'Left room', isSensorOpen),
                 new Room('room2', 'Right room', true)
             ];
