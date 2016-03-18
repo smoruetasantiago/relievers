@@ -111,7 +111,10 @@ wsServer.on('request', (r) => {
 
             if (sensorChanged) {
                 rooms[0].toggleOccupationStatus();
-                connection.send(JSON.stringify(getDoorStatus()));
+                connection.send(JSON.stringify({
+		    message: 'get-doors-status',
+	            doors_status: getDoorStatus()
+                }));
             }
         });
         pyShell.end((err) => {
