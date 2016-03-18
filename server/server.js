@@ -41,6 +41,12 @@ function handleWebRequest(request, response) {
         queueOfPeople.addWaiter();
         response.setHeader('Content-Type', 'application/json');
         response.write(JSON.stringify(queueOfPeople.getQueue()));
+    } else if (request.url.indexOf('ban') !== -1 ) {
+        const roomId = request.url.match('ban?room=(\w+)')[1];
+
+        setAvoidRoom(roomId);
+        response.setHeader('Content-Type', 'application/json');
+        response.write(JSON.stringify(true));
     }
     response.end();
 }
@@ -56,6 +62,7 @@ function getMessageHandler(message) {
         case 'get-waiting-queue':
             return getQueueHandler;
             break;
+        }
         default:
             return function () {}
             break;
@@ -63,11 +70,17 @@ function getMessageHandler(message) {
 }
 
 function getDoorsStatus() {
-    var result = rooms.map((room) => {
+    let result = rooms.map((room) => {
         return room.getJson()
     });
 
     return result;
+}
+
+function setAvoidRoom(idRoom) {
+    const room = idRoom === 'room1' ? 0 : 1;
+
+    rooms[room].setAvoidAtAnyCost();
 }
 
 /** Handlers **/

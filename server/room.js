@@ -5,6 +5,7 @@ class Room {
         this.id = id;
         this.name = name;
         this.isAvailable = isFree;
+        this.isInQuarantine = false;
     }
 
     isFree() {
@@ -24,11 +25,16 @@ class Room {
         else this.free();
     }
 
+    setAvoidAtAnyCost() {
+        this.isInQuarantine = true;
+    }
+
     getJson() {
         return {
             id: this.id,
             name: this.name,
-            available: this.isAvailable
+            available: this.isAvailable,
+            inQuarantine: this.inQuarantine
         }
     }
 }
