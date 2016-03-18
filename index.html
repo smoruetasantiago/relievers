@@ -5,6 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>The relievers</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -14,15 +15,29 @@
 					
 			<div class="status-container">
 				<div id="room1" class="room available">
-					<span>Room 1</span>
-					<span class="block status center">AVAILABLE</span>
-					<span class="timer">Timer open: 01:20:09</span>
+                    <div>
+                        <span>Room 1</span>
+                        <span class="block status center">AVAILABLE</span>
+                        <span class="timer">Timer open: 01:20:09</span>
+                    </div>
+                    <div class="tools">
+						<ul>
+							<li><a href="http://moonpig-game.azurewebsites.net/"><i class="fa fa-gamepad fa-2x"></i></li>
+						</ul>
+					</div>
 				</div>
 				
 				<div id="room2" class="room available">
-					<span>Room 2</span>
-					<span class="block status center">AVAILABLE</span>
-					<span class="timer">Timer closed: 01:20:09</span>
+                    <div>
+                        <span>Room 2</span>
+                        <span class="block status center">AVAILABLE</span>
+                        <span class="timer">Timer closed: 01:20:09</span>
+                    </div>
+                    <div class="tools">
+						<ul>
+							<li><a href="http://moonpig-game.azurewebsites.net/"><i class="fa fa-gamepad fa-2x"></i></li>
+						</ul>
+					</div>
 				</div>
 			</div>
 			<div data-id="current-turn" id="current-turn" class="current-turn-container hidden">
@@ -36,9 +51,6 @@
 					<div class="queue-container">
 						<h4>Next in line</h3>
 						<ul class="queue">
-							<li>202</li>
-							<li>203</li>
-							<li>204</li>
 						</ul>
 					</div>
 				</div>
