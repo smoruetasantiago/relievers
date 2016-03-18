@@ -40,7 +40,7 @@ function handleWebRequest(request, response) {
         response.write(JSON.stringify(getDoorsStatus()));
     } else if (request.url.indexOf('book') !== -1 ) {
         response.setHeader('Content-Type', 'application/json');
-        response.write(queueOfPeople.getQueue());
+        response.write(JSON.stringify(queueOfPeople.getQueue()));
     }
     response.end();
 }
