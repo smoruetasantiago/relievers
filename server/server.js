@@ -42,7 +42,7 @@ function handleWebRequest(request, response) {
         response.setHeader('Content-Type', 'application/json');
         response.write(JSON.stringify(queueOfPeople.getQueue()));
     } else if (request.url.indexOf('ban') !== -1 ) {
-        const roomId = request.url.match('ban?room=(\w+)')[1];
+        const roomId = request.url.split('=')[1];
 
         setAvoidRoom(roomId);
         response.setHeader('Content-Type', 'application/json');
